@@ -14,6 +14,13 @@ STATIONARY_X = -3  # x position of the stationary point
 
 class DerivativeDefinition(Scene):
     def construct(self):
+
+        # Title
+        title = Text("Derivative Definition", font_size=60).set_color_by_gradient(RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE)
+        self.play(Write(title))
+        self.wait(2)
+        self.play(FadeOut(title))
+
         # Definition of the derivative (top left corner)
         derivative_def = MathTex(
             "f'(x) = \\lim\\limits_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
@@ -65,11 +72,14 @@ class DerivativeDefinition(Scene):
         self.play(Write(h_label))
 
         # Slope tracker label (fixed in lower right)
+        
         slope_label = always_redraw(lambda: MathTex(
             "Slope =", f"{self.calculate_slope(STATIONARY_X, self.get_x_coordinate(moving_point, axes)):.2f}"
         ).to_corner(DR))
+        x_label = MathTex("x =" f"{STATIONARY_X}").next_to(slope_label, UP, buff=0.5)
 
         self.play(Write(slope_label))
+        self.play(Write(x_label))
 
         # Path for moving point (from Start_X to Stationary_X)
         path_points = [
