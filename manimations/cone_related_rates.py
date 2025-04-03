@@ -20,7 +20,7 @@ class ConeRelatedRates(Scene):
         real_radius = 8
         volume_loss = 15
         scale_factor = 0.25
-        playback_speed = 4
+        playback_speed = 10
         #change to use real_height and real_radius in the problem statement
         problem_statement = Text(f"An inverted cone has a height of {real_height} cm and a radius of {real_radius} cm, and was initially full of water.\nThe water drains out at a rate of {volume_loss} cm^3/sec.\nThe surface level of the water falls as a result. At what rate is the water level falling when the water is halfway down the cone?", font_size=20).to_edge(UP)
         self.play(Write(problem_statement))
@@ -37,7 +37,7 @@ class ConeRelatedRates(Scene):
         self.wait(1)
 
         # Step 4: Create the water level
-        water = Cone(height=cone_height, base_radius=cone_radius, direction=DOWN, fill_opacity=0.8, color=BLUE).shift(DOWN * 2)
+        water = cone.copy().set_fill(BLUE, opacity=0.8)
         self.play(Create(water))
         self.wait(1)
 
@@ -61,48 +61,25 @@ class ConeRelatedRates(Scene):
         halfway_text = MathTex(f"h ={real_height / 2}\\text{{ cm}}", font_size=24).next_to(halfway_line, RIGHT)
         self.play(Create(halfway_line), Write(halfway_text))
 
-        # Step 6: Animate the water level falling according to the rate dh/dt
-        initial_volume = PI * real_radius**2 * real_height / 3
-        final_height = 0  # Water drains completely
+        # Define an accelerating drain function
+        def accelerating_drain(t):
+            return t ** 2  # Starts slow, speeds up as it drains
 
-        # Create a ValueTracker for the water level height
-        water_height = ValueTracker(real_height)
+        def update_water(mob, alpha):
+            """Gradually shrink water cone while maintaining similarity and alignment."""
+            shrink_factor = max(1 - accelerating_drain(alpha), 1e-6)  # 1 at start, 0 at end (clamped to avoid division by zero)
+            new_height = shrink_factor * cone_height
+            new_radius = shrink_factor * cone_radius
 
-        def get_water_level_height():
-            return water_height.get_value()
+            # Create a new water cone with updated dimensions
+            new_water = Cone(
+                height=new_height, base_radius=new_radius, direction=DOWN
+            ).set_fill(BLUE, opacity=0.75).shift(DOWN * 2)
 
-        def get_water_radius():
-            return (get_water_level_height() * real_radius) / real_height
+            mob.become(new_water)
 
-        # Create a function to calculate the total time it takes for the water to drain to a given height
-        def get_time_to_reach_height(h_initial, h_final):
-            v_initial = (1 / 3) * PI * (real_radius / real_height)**2 * h_initial**3
-            v_final = (1 / 3) * PI * (real_radius / real_height)**2 * h_final**3
-            return (v_initial - v_final) / volume_loss  # Adjusted for positive volume_loss
-
-        water.add_updater(lambda m: m.become(
-            Cone(
-                height=get_water_level_height() * scale_factor,
-                base_radius=get_water_radius() * scale_factor,
-                direction=DOWN,
-                fill_opacity=0.8,
-                color=BLUE
-            ).shift(DOWN * 2)
-        ))
-
-        self.add(water)  # Ensure the water is updated continuously in the scene
-
-        # Calculate the time to drain the water completely
-        time_to_drain = get_time_to_reach_height(real_height, final_height)
-
-        # Animate the water draining to the final height
-        self.play(
-            water_height.animate.set_value(final_height),
-            run_time=time_to_drain / playback_speed  # Adjust the speed of water drainage
-        )
-
-        # Remove the water updater now that it's finished animating
-        water.clear_updaters()
+        self.play(UpdateFromAlphaFunc(water, update_water), run_time=playback_speed)
+        self.wait(2)
 
 
         # Step 7: Add new lines for the halfway radius and height with labels
