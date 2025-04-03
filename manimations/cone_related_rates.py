@@ -16,8 +16,8 @@ class ConeRelatedRates(Scene):
         self.play(FadeOut(title))
 
         # Step 2: Problem Statement
-        real_height = 10
-        real_radius = 8
+        real_height = 20
+        real_radius = 6
         volume_loss = 15
         scale_factor = 0.25
         playback_speed = 10
@@ -30,7 +30,7 @@ class ConeRelatedRates(Scene):
         
         cone_height = real_height * scale_factor
         cone_radius = real_radius * scale_factor
-        cone = Cone(height=cone_height, base_radius=cone_radius, direction=DOWN).shift(DOWN * 2)
+        cone = Cone(height=cone_height, base_radius=cone_radius, direction=DOWN, checkerboard_colors=False).shift(DOWN * 2)
         cone.set_fill(opacity=0.3)
 
         self.play(Create(cone))
