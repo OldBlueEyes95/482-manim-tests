@@ -63,20 +63,18 @@ class ConeRelatedRates(Scene):
 
         # Define an accelerating drain function
         def accelerating_drain(t):
-            return t ** 2  # Starts slow, speeds up as it drains
+            term = cone_height ** 3 - (3 * volume_loss * cone_height ** 2 / (np.pi * cone_radius ** 2)) * t
+            h_t = term ** (1 / 3) if term > 0 else 0  # Prevent complex numbers
+            return h_t
+
 
         def update_water(mob, alpha):
             """Gradually shrink water cone while maintaining similarity and alignment."""
-            shrink_factor = max(1 - accelerating_drain(alpha), 1e-6)  # 1 at start, 0 at end (clamped to avoid division by zero)
-            new_height = shrink_factor * cone_height
-            new_radius = shrink_factor * cone_radius
-
-            # Create a new water cone with updated dimensions
-            new_water = Cone(
-                height=new_height, base_radius=new_radius, direction=DOWN
-            ).set_fill(BLUE, opacity=0.75).shift(DOWN * 2)
-
-            mob.become(new_water)
+            new_height = max(accelerating_drain(alpha), 1e-6)
+            new_radius = (cone_radius / cone_height) * new_height
+            mob.become(Cone(height=new_height, base_radius=new_radius, direction=DOWN))
+            mob.set_fill(BLUE, opacity=0.75)
+            mob.shift(DOWN * 2)
 
         self.play(UpdateFromAlphaFunc(water, update_water), run_time=playback_speed)
         self.wait(2)
