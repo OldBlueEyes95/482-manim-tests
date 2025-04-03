@@ -215,3 +215,49 @@ class GenericMatrixMultiply(Scene):
         self.play(FadeOut(row_bar))
         self.play(FadeOut(col_bar))
         self.play(FadeOut(out_box))
+
+
+class CylindricalShells(ThreeDScene):
+    def construct(self):
+        self.set_camera_orientation(phi=90 * DEGREES, theta=-90 * DEGREES)
+
+        # Define 3D parametric curves (x, y, z) where z is the function value
+        y_value = 0
+        z_constant = 0
+        
+        flat = ParametricFunction(
+            lambda t: np.array([t, y_value, 1 + z_constant]),  # y=0, z=1 (constant height)
+            t_range=[0, 3],
+            color=RED
+        )
+
+        line = ParametricFunction(
+            lambda t: np.array([t, y_value, 0.5 * t + z_constant]),  # z = 0.5x
+            t_range=[0, 3],
+            color=BLUE
+        )
+
+        cubic = ParametricFunction(
+            lambda t: np.array([t, y_value, 0.1 * t**3 + z_constant]),  # z = 0.1x^3
+            t_range=[0, 3],
+            color=GREEN
+        )
+
+        # Group the curves and arrange them
+        functions = VGroup(flat, line, cubic).arrange(RIGHT, buff=0.5).shift(0*UP)
+
+        # Add the curves to the scene
+        self.add(functions)
+
+        # Rotate the group around the z-axis
+        self.play(
+            Rotating(
+                functions,
+                axis=[1, 0, 0],  # Rotate around z-axis
+                about_point=[0, 0, -2],
+                radians=2 * PI,  # Full rotation
+                run_time=2
+            )
+        )
+
+        self.wait(1)
