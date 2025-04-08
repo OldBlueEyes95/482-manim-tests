@@ -9,132 +9,156 @@ config.frame_width = 18.0
 # GLOBAL VARIABLES
 X_RANGE_EDITABLE = [-5, 5, 1]
 Y_RANGE_EDITABLE = [-5, 5, 1]
-START_X = 2  # Initial x position for moving point
-STATIONARY_X = -3  # x position of the stationary point
+START_X_EDITABLE = 2
+STATIONARY_X_EDITABLE = -1
+
+# Easily editable function
+FUNC_EDITABLE = lambda x: 0.5 * x**2 - x
+
+
 
 class DerivativeDefinition(Scene):
+
+    
     def construct(self):
 
-        # Title
         title = Text("Derivative Definition", font_size=60).set_color_by_gradient(RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE)
         self.play(Write(title))
         self.wait(2)
         self.play(FadeOut(title))
 
-        # Definition of the derivative (top left corner)
-        derivative_def = MathTex(
+        # Derivative definition with explanation
+        lhs_derivative_def = MathTex(
             "f'(x) = \\lim\\limits_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
             font_size=36
         ).to_corner(UL)
-        self.play(Write(derivative_def))
+
+        rhs_derivative_def = MathTex(
+            "= \\text{slope of the secant line}",
+            font_size=36
+        ).next_to(lhs_derivative_def, RIGHT)
+
+        explanation = Text(
+            "As h → 0, the slope of the secant line approaches\nthe slope of the tangent line.",
+            font_size=28
+        ).next_to(lhs_derivative_def, DOWN, aligned_edge=LEFT)
+
+        # Write both sides of the equation
+        self.play(Write(lhs_derivative_def), Write(rhs_derivative_def))
+        self.wait(1)
+        self.play(Write(explanation))
+        self.wait(2)
+        # Fade out only the right-hand side and explanation
+        self.play(FadeOut(rhs_derivative_def), FadeOut(explanation))
+
 
         # Axes
         axes = Axes(
             x_range=X_RANGE_EDITABLE,
             y_range=Y_RANGE_EDITABLE,
             axis_config={"color": WHITE},
-            tips=False  
+            tips=False
         )
         labels = axes.get_axis_labels(x_label="x", y_label="f(x)")
         self.play(Create(axes), Write(labels))
 
-        # Function
-        func = axes.plot(lambda x: 0.1 * x**3 - 0.5 * x, color=BLUE)
-        self.play(Create(func))
+        # Function curve
+        func_curve = axes.plot(FUNC_EDITABLE, color=BLUE)
+        self.play(Create(func_curve))
 
-        # Stationary point
-        stationary_point = Dot(axes.c2p(STATIONARY_X, 0.1 * STATIONARY_X**3 - 0.5 * STATIONARY_X), color=RED)
-        self.play(Create(stationary_point))
+        # Stationary and moving points
+        stationary_point = Dot(axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE)), color=RED)
+        moving_point = Dot(axes.c2p(START_X_EDITABLE, FUNC_EDITABLE(START_X_EDITABLE)), color=YELLOW)
+        self.play(Create(stationary_point), Create(moving_point))
 
-        # Moving point
-        moving_point = Dot(axes.c2p(START_X, 0.1 * START_X**3 - 0.5 * START_X), color=YELLOW)
-        self.play(Create(moving_point))
 
-        # Secant Line (updates dynamically)
+        
+        tangent_line = always_redraw(lambda: self.get_tangent_line(axes, STATIONARY_X_EDITABLE))
+        tangent_label = Text("Tangent line:", font_size=32).set_color(YELLOW).next_to(tangent_line, LEFT)
+        tangent_label.shift(RIGHT * 1.5 + DOWN * 0.5)
+        self.play(Create(tangent_line), Write(tangent_label))
+
+
+        # Secant Line
         secant_line = always_redraw(lambda: self.get_extended_secant_line(
-            axes, STATIONARY_X, self.get_x_coordinate(moving_point, axes)
+            axes, STATIONARY_X_EDITABLE, self.get_x_coordinate(moving_point, axes)
         ))
         self.play(Create(secant_line))
 
-        # Initial h-line
+        # h line and label
         h_line = always_redraw(lambda: Line(
-            axes.c2p(STATIONARY_X, 0.1 * STATIONARY_X**3 - 0.5 * STATIONARY_X),
-            axes.c2p(self.get_x_coordinate(moving_point, axes), 0.1 * STATIONARY_X**3 - 0.5 * STATIONARY_X),
+            axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE)),
+            axes.c2p(self.get_x_coordinate(moving_point, axes), FUNC_EDITABLE(STATIONARY_X_EDITABLE)),
             color=YELLOW
         ))
-        self.play(Create(h_line))
-
-        # h Label (updating with movement)
         h_label = always_redraw(lambda: MathTex(
-            "h =", f"{abs(self.get_x_coordinate(moving_point, axes) - STATIONARY_X):.2f}"
+            "h =", f"{abs(self.get_x_coordinate(moving_point, axes) - STATIONARY_X_EDITABLE):.2f}"
         ).next_to(h_line, DOWN, buff=0.5))
+        self.play(Create(h_line), Write(h_label))
 
-        self.play(Write(h_label))
-
-        # Slope tracker label (fixed in lower right)
-        
+        # Slope tracker
         slope_label = always_redraw(lambda: MathTex(
-            "Slope =", f"{self.calculate_slope(STATIONARY_X, self.get_x_coordinate(moving_point, axes)):.2f}"
+            "Slope =", f"{self.calculate_slope(STATIONARY_X_EDITABLE, self.get_x_coordinate(moving_point, axes)):.2f}"
         ).to_corner(DR))
-        x_label = MathTex("x =" f"{STATIONARY_X}").next_to(slope_label, UP, buff=0.5)
+        x_label = MathTex("x =" f"{STATIONARY_X_EDITABLE}").next_to(slope_label, UP, buff=0.5)
+        self.play(Write(slope_label), Write(x_label))
 
-        self.play(Write(slope_label))
-        self.play(Write(x_label))
-
-        # Path for moving point (from Start_X to Stationary_X)
-        path_points = [
-            axes.c2p(x, 0.1 * x**3 - 0.5 * x) for x in np.linspace(START_X, STATIONARY_X, 100)
-        ]
+        # Path animation
+        path_points = [axes.c2p(x, FUNC_EDITABLE(x)) for x in np.linspace(START_X_EDITABLE, STATIONARY_X_EDITABLE, 100)]
         path = VMobject().set_points_as_corners(path_points)
+        self.play(MoveAlongPath(moving_point, path, rate_func=linear, run_time=5))
+        self.play(moving_point.animate.move_to(axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE))), run_time=0.5)
 
-        # Animate the moving point
-        self.play(
-            MoveAlongPath(moving_point, path, rate_func=linear, run_time=5),
-        )
-
-        # Ensure moving point stops exactly at stationary point
-        self.play(moving_point.animate.move_to(axes.c2p(STATIONARY_X, 0.1 * STATIONARY_X**3 - 0.5 * STATIONARY_X)), run_time=0.5)
-
-        # Final tangent slope label
-        final_slope = self.calculate_derivative(STATIONARY_X)
-        tangent_slope_label = MathTex(f"Slope = {final_slope:.2f}").to_corner(DR)
-        #self.play(Transform(slope_label, tangent_slope_label))
-
-        # Remove h label and h-line
         self.play(FadeOut(h_label), FadeOut(h_line))
-
         self.wait()
 
     def get_x_coordinate(self, dot, axes):
         return axes.p2c(dot.get_center())[0]
 
-    def calculate_derivative(self, x):
-        return 0.3 * x**2 - 0.5
+    def calculate_derivative(self, x, dx=1e-4):
+        return (FUNC_EDITABLE(x + dx) - FUNC_EDITABLE(x - dx)) / (2 * dx)
 
     def calculate_slope(self, x1, x2):
         if x1 == x2:
             return self.calculate_derivative(x1)
-        y1 = 0.1 * x1**3 - 0.5 * x1
-        y2 = 0.1 * x2**3 - 0.5 * x2
+        y1 = FUNC_EDITABLE(x1)
+        y2 = FUNC_EDITABLE(x2)
         return (y2 - y1) / (x2 - x1)
+    
+    def get_tangent_line(self, axes, x, dx=1e-4):
+        slope = self.calculate_derivative(x, dx)
+        y = FUNC_EDITABLE(x)
+
+        delta_x = 1.5
+        x1 = x - delta_x
+        x2 = x + delta_x
+        y1 = y + slope * (x1 - x)
+        y2 = y + slope * (x2 - x)
+
+        return Line(
+            axes.c2p(x1, y1),
+            axes.c2p(x2, y2),
+            color=YELLOW,
+            stroke_width=4
+        )
 
     def get_extended_secant_line(self, axes, x1, x2):
-        if x1 == x2:
+        if abs(x1 - x2) < 1e-6:
             slope = self.calculate_derivative(x1)
-            y1 = 0.1 * x1**3 - 0.5 * x1
-            x_min, x_max = X_RANGE_EDITABLE[0], X_RANGE_EDITABLE[1]
-            y_min = y1 + slope * (x_min - x1)
-            y_max = y1 + slope * (x_max - x1)
+            y1 = FUNC_EDITABLE(x1)
         else:
-            y1 = 0.1 * x1**3 - 0.5 * x1
-            y2 = 0.1 * x2**3 - 0.5 * x2
+            y1 = FUNC_EDITABLE(x1)
+            y2 = FUNC_EDITABLE(x2)
             slope = (y2 - y1) / (x2 - x1)
-            x_min, x_max = X_RANGE_EDITABLE[0], X_RANGE_EDITABLE[1]
-            y_min = y1 + slope * (x_min - x1)
-            y_max = y1 + slope * (x_max - x1)
+
+        x_min, x_max = X_RANGE_EDITABLE[0], X_RANGE_EDITABLE[1]
+        y_min = y1 + slope * (x_min - x1)
+        y_max = y1 + slope * (x_max - x1)
 
         return Line(
             axes.c2p(x_min, y_min),
             axes.c2p(x_max, y_max),
             color=GREEN
         )
+
+    
