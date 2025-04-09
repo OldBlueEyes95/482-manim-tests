@@ -219,45 +219,97 @@ class GenericMatrixMultiply(Scene):
 
 class CylindricalShells(ThreeDScene):
     def construct(self):
-        self.set_camera_orientation(phi=90 * DEGREES, theta=-90 * DEGREES)
-
-        # Define 3D parametric curves (x, y, z) where z is the function value
-        y_value = 0
-        z_constant = 0
+        self.set_camera_orientation(phi=60 * DEGREES, theta=-45 * DEGREES)
         
-        flat = ParametricFunction(
-            lambda t: np.array([t, y_value, 1 + z_constant]),  # y=0, z=1 (constant height)
-            t_range=[0, 3],
-            color=RED
+        standing_axes = ThreeDAxes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            z_range=[-5, 5, 1]
+        ).move_to(ORIGIN)
+        axes_labels = standing_axes.get_axis_labels(
+            Text("x-axis").scale(0.7), Text("y-axis").scale(0.45), Text("z-axis").scale(0.45)
         )
-
-        line = ParametricFunction(
-            lambda t: np.array([t, y_value, 0.5 * t + z_constant]),  # z = 0.5x
-            t_range=[0, 3],
-            color=BLUE
+        
+        self.add(standing_axes, axes_labels)
+        
+        # Define 3D parametric curves (x, y, z) where z is the function value
+        x_offset = 0
+        y_offset = 0 # keep at 0 to align to axis
+        z_offset = 0 # keep at 0 to align to axis
+        t_range = [0, 5]
+        
+        f_const = ParametricFunction(
+            lambda t: np.array([t + x_offset, y_offset, 1 + z_offset]),  # y=0, z=1 (constant height)
+            t_range=t_range, color=RED
+        ).set_shade_in_3d(True)
+        s_const = Surface(
+            lambda u, v: np.array([
+                u, 
+                1 * np.cos(v),
+                1 * np.sin(v)
+            ]),
+            u_range=[0, 5],
+            v_range=[0, 2 * PI],
+            resolution=(20, 40),
+            checkerboard_colors=[RED, RED_D],
+            fill_opacity=0.7
         )
-
-        cubic = ParametricFunction(
-            lambda t: np.array([t, y_value, 0.1 * t**3 + z_constant]),  # z = 0.1x^3
-            t_range=[0, 3],
-            color=GREEN
+        f__line = ParametricFunction(
+            lambda t: np.array([t + x_offset, y_offset, 0.5 * t + z_offset]),  # z = 0.5x
+            t_range=t_range, color=BLUE
+        ).set_shade_in_3d(True)
+        s__line = Surface(
+            lambda u, v: np.array([
+                u, 
+                0.5 * u * np.cos(v),
+                0.5 * u * np.sin(v)
+            ]),
+            u_range=[0, 5],
+            v_range=[0, 2 * PI],
+            resolution=(20, 40),
+            checkerboard_colors=[BLUE, BLUE_D],
+            fill_opacity=0.7
         )
-
-        # Group the curves and arrange them
-        functions = VGroup(flat, line, cubic).arrange(RIGHT, buff=0.5).shift(0*UP)
-
-        # Add the curves to the scene
-        self.add(functions)
-
-        # Rotate the group around the z-axis
+        f_cubic = ParametricFunction(
+            lambda t: np.array([t + x_offset, y_offset, 0.02 * t**3 + z_offset]),  # z = 0.1x^3
+            t_range=t_range, color=GREEN
+        ).set_shade_in_3d(True)
+        s_cubic = Surface(
+            lambda u, v: np.array([
+                u, 
+                0.02 * u**3 * np.cos(v),
+                0.02 * u**3 * np.sin(v)
+            ]),
+            u_range=[0, 5],
+            v_range=[0, 2 * PI],
+            resolution=(20, 40),
+            checkerboard_colors=[GREEN, GREEN_D],
+            fill_opacity=0.7
+        )
+        
+        
+        self.play(Write(f_const))
         self.play(
-            Rotating(
-                functions,
-                axis=[1, 0, 0],  # Rotate around z-axis
-                about_point=[0, 0, -2],
-                radians=2 * PI,  # Full rotation
-                run_time=2
-            )
+            Rotate(f_const, 2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
+            Write(s_const, rate_func=rate_functions.ease_in_quad)
         )
-
+        self.wait(1)
+        self.play(FadeOut(f_const, s_const))
+        
+        self.play(Write(f__line))
+        self.play(
+            Rotate(f__line, 2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
+            Write(f__line, rate_func=rate_functions.ease_in_quad)
+        )
+        self.wait(1)
+        self.play(FadeOut(f__line, s__line))
+        
+        self.play(Write(f_cubic))
+        self.play(
+            Rotate(f_cubic, 2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
+            Write(s_cubic, rate_func=rate_functions.ease_in_quad)
+        )
+        self.wait(1)
+        self.play(FadeOut(f_cubic, s_cubic))
+        
         self.wait(1)
