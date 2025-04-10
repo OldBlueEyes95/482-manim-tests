@@ -16,20 +16,20 @@ class ConeRelatedRates(Scene):
         self.play(FadeOut(title))
 
         # Step 2: Problem Statement
-        real_height = 20
-        real_radius = 6
-        volume_loss = 15
-        scale_factor = 0.25
-        playback_speed = 10
-        #change to use real_height and real_radius in the problem statement
-        problem_statement = Text(f"An inverted cone has a height of {real_height} cm and a radius of {real_radius} cm, and was initially full of water.\nThe water drains out at a rate of {volume_loss} cm^3/sec.\nThe surface level of the water falls as a result. At what rate is the water level falling when the water is halfway down the cone?", font_size=20).to_edge(UP)
+        REAL_HEIGHT_EDITABLE = 20
+        REAL_RADIUS_EDITABLE = 6
+        VOLUME_LOSS_EDITABLE = 15
+        SCALE_FACTOR_EDITABLE = 0.25
+        PLAYBACK_SPEED_EDITABLE = 10
+        #change to use REAL_HEIGHT_EDITABLE and REAL_RADIUS_EDITABLE in the problem statement
+        problem_statement = Text(f"An inverted cone has a height of {REAL_HEIGHT_EDITABLE} cm and a radius of {REAL_RADIUS_EDITABLE} cm, and was initially full of water.\nThe water drains out at a rate of {VOLUME_LOSS_EDITABLE} cm^3/sec.\nThe surface level of the water falls as a result. At what rate is the water level falling when the water is halfway down the cone?", font_size=20).to_edge(UP)
         self.play(Write(problem_statement))
         self.wait(2)
 
         # Step 3: Create the cone
         
-        cone_height = real_height * scale_factor
-        cone_radius = real_radius * scale_factor
+        cone_height = REAL_HEIGHT_EDITABLE * SCALE_FACTOR_EDITABLE
+        cone_radius = REAL_RADIUS_EDITABLE * SCALE_FACTOR_EDITABLE
         cone = Cone(height=cone_height, base_radius=cone_radius, direction=DOWN, checkerboard_colors=False).shift(DOWN * 2)
         cone.set_fill(opacity=0.3)
 
@@ -43,10 +43,10 @@ class ConeRelatedRates(Scene):
 
         # Step 5: Add initial lines for radius and height with labels
         height_line = Line(cone.get_top(), cone.get_bottom(), color=GREEN)
-        #Use real_height and real_radius for the labels
-        height_label = MathTex(f"{real_height}\\text{{ cm}}").next_to(height_line, RIGHT, buff=0.1)
+        #Use REAL_HEIGHT_EDITABLE and REAL_RADIUS_EDITABLE for the labels
+        height_label = MathTex(f"{REAL_HEIGHT_EDITABLE}\\text{{ cm}}").next_to(height_line, RIGHT, buff=0.1)
         radius_line = Line(cone.get_top(), cone.get_top() + RIGHT * cone_radius, color=RED)
-        radius_label = MathTex(f"{real_radius}\\text{{ cm}}").next_to(radius_line, UP, buff=0.1)
+        radius_label = MathTex(f"{REAL_RADIUS_EDITABLE}\\text{{ cm}}").next_to(radius_line, UP, buff=0.1)
 
         self.play(Create(height_line), Write(height_label), Create(radius_line), Write(radius_label))
         self.wait(1)
@@ -56,13 +56,13 @@ class ConeRelatedRates(Scene):
 
         # Add halfway marker
         halfway_line = DashedLine(cone.get_bottom() + RIGHT * cone_radius, cone.get_top() + DOWN * (cone_height / 2) + RIGHT * cone_radius, color=YELLOW)
-        #Use half of real_height for halfway_text
-        halfway_text = MathTex(f"h ={real_height / 2}\\text{{ cm}}", font_size=24).next_to(halfway_line, RIGHT)
+        #Use half of REAL_HEIGHT_EDITABLE for halfway_text
+        halfway_text = MathTex(f"h ={REAL_HEIGHT_EDITABLE / 2}\\text{{ cm}}", font_size=24).next_to(halfway_line, RIGHT)
         self.play(Create(halfway_line), Write(halfway_text))
 
         # Define an accelerating drain function
         def accelerating_drain(t):
-            term = cone_height ** 3 - (3 * volume_loss * cone_height ** 2 / (np.pi * cone_radius ** 2)) * t
+            term = cone_height ** 3 - (3 * VOLUME_LOSS_EDITABLE * cone_height ** 2 / (np.pi * cone_radius ** 2)) * t
             h_t = term ** (1 / 3) if term > 0 else 0  # Prevent complex numbers
             return h_t
 
@@ -75,17 +75,17 @@ class ConeRelatedRates(Scene):
             mob.set_fill(BLUE, opacity=0.75)
             mob.shift(DOWN * 2)
 
-        self.play(UpdateFromAlphaFunc(water, update_water), run_time=playback_speed)
+        self.play(UpdateFromAlphaFunc(water, update_water), run_time=PLAYBACK_SPEED_EDITABLE)
         self.wait(2)
 
 
         # Step 7: Add new lines for the halfway radius and height with labels
-        #Again, use real_height and real_radius for the labels
+        #Again, use REAL_HEIGHT_EDITABLE and REAL_RADIUS_EDITABLE for the labels
         new_height_line = Line(cone.get_top() + DOWN * (cone_height / 2), cone.get_bottom(), color=GREEN)
-        new_height_label = MathTex(f"{real_height / 2}\\text{{ cm}}").next_to(new_height_line, RIGHT, buff=0.1)
+        new_height_label = MathTex(f"{REAL_HEIGHT_EDITABLE / 2}\\text{{ cm}}").next_to(new_height_line, RIGHT, buff=0.1)
 
         new_radius_line = Line(cone.get_top() + DOWN * (cone_height / 2), cone.get_top() + DOWN * (cone_height / 2) + RIGHT * (cone_radius / 2), color=RED)
-        new_radius_label = MathTex(f"{real_radius / 2}\\text{{ cm}}").next_to(new_radius_line, UP, buff=0.1)
+        new_radius_label = MathTex(f"{REAL_RADIUS_EDITABLE / 2}\\text{{ cm}}").next_to(new_radius_line, UP, buff=0.1)
 
         self.play(Create(new_height_line), Write(new_height_label), Create(new_radius_line), Write(new_radius_label))
 
@@ -104,7 +104,7 @@ class ConeRelatedRates(Scene):
         self.wait(1)
 
         # Step 10: Work through the problem
-        known_values = MathTex(r"\frac{dV}{dt} = -" + str(volume_loss) + r"\, \text{cm}^3/\text{s}, \, r = " + str(real_radius) + r"\, \text{cm}, \, h = " + str(real_height) + r"\, \text{cm}",
+        known_values = MathTex(r"\frac{dV}{dt} = -" + str(VOLUME_LOSS_EDITABLE) + r"\, \text{cm}^3/\text{s}, \, r = " + str(REAL_RADIUS_EDITABLE) + r"\, \text{cm}, \, h = " + str(REAL_HEIGHT_EDITABLE) + r"\, \text{cm}",
             font_size=32
         ).to_edge(RIGHT).shift(UP * 3, LEFT * 2)
         self.play(Write(known_values))
@@ -116,7 +116,7 @@ class ConeRelatedRates(Scene):
         self.wait(1)
 
         similar_triangles_text = Text("Using similar triangles: ", font_size=24).next_to(volume_formula, DOWN, buff=0.25)
-        similar_triangles = MathTex(r"\frac{r}{" + str(real_radius) + r"} = \frac{h}{" + str(real_height) + r"}", font_size=32).next_to(similar_triangles_text, DOWN, buff=0.25)
+        similar_triangles = MathTex(r"\frac{r}{" + str(REAL_RADIUS_EDITABLE) + r"} = \frac{h}{" + str(REAL_HEIGHT_EDITABLE) + r"}", font_size=32).next_to(similar_triangles_text, DOWN, buff=0.25)
 
         triangle_1_points = [cone.get_top(), cone.get_bottom(), cone.get_top() + RIGHT * cone_radius]
         triangle_2_points = [cone.get_bottom(), cone.get_top() + DOWN * (cone_height /2), cone.get_top() + DOWN * (cone_height / 2) + RIGHT * (cone_radius / 2)]
@@ -124,14 +124,14 @@ class ConeRelatedRates(Scene):
         triangle_1 = Polygon(*triangle_1_points, stroke_color=GREEN, stroke_width=2, fill_color=GREEN ,fill_opacity=0.3)
         triangle_2 = Polygon(*triangle_2_points, stroke_color=RED, stroke_width=2, fill_color=RED, fill_opacity=0.3)
 
-        similar_triangles_radius_label = MathTex(str(real_radius), font_size=24).next_to((triangle_1_points[0] + triangle_1_points[2])/2, UP)
+        similar_triangles_radius_label = MathTex(str(REAL_RADIUS_EDITABLE), font_size=24).next_to((triangle_1_points[0] + triangle_1_points[2])/2, UP)
         similar_triangles_r_label = MathTex("r", font_size=24).next_to((triangle_2_points[1] + triangle_2_points[2])/2, UP)
 
         similar_triangles_half_height_line = Line(cone.get_bottom() + RIGHT * cone_radius, cone.get_top() + DOWN * (cone_height / 2) + RIGHT * cone_radius, color=YELLOW)
         similar_triangles_full_height_line = Line(cone.get_bottom() + RIGHT * (cone_radius + 0.3), cone.get_top() + RIGHT * (cone_radius + 0.3), color=YELLOW)
 
         similar_triangles_half_height_label = MathTex("h", font_size=24).next_to(similar_triangles_half_height_line, RIGHT, buff=0.1)
-        similar_triangles_full_height_label = MathTex(str(real_height), font_size=24).next_to(similar_triangles_full_height_line, RIGHT, buff=0.1)
+        similar_triangles_full_height_label = MathTex(str(REAL_HEIGHT_EDITABLE), font_size=24).next_to(similar_triangles_full_height_line, RIGHT, buff=0.1)
 
 
         self.play(Create(triangle_1), Create(triangle_2), Write(similar_triangles_text), Write(similar_triangles))
@@ -142,7 +142,7 @@ class ConeRelatedRates(Scene):
 
         # Show multiplication of 8 on both sides
         solve_for_r_text = Text("Solving for r:", font_size=24).next_to(similar_triangles, DOWN, buff=0.25)
-        solve_for_r = MathTex(r"r = \frac{" + str(real_radius) + r"h}{" + str(real_height) + r"}", font_size=32).next_to(solve_for_r_text, DOWN, buff=0.25)
+        solve_for_r = MathTex(r"r = \frac{" + str(REAL_RADIUS_EDITABLE) + r"h}{" + str(REAL_HEIGHT_EDITABLE) + r"}", font_size=32).next_to(solve_for_r_text, DOWN, buff=0.25)
         
 
         self.play(Write(solve_for_r_text), Write(solve_for_r))
@@ -158,9 +158,9 @@ class ConeRelatedRates(Scene):
 
         simplify_text = Text("Simplify the expression:", font_size=24).next_to(solve_for_r, DOWN, buff=0.25)
         
-        gcd_value = gcd(real_radius, real_height)
-        simplified_num = real_radius // gcd_value
-        simplified_denom = real_height // gcd_value
+        gcd_value = gcd(REAL_RADIUS_EDITABLE, REAL_HEIGHT_EDITABLE)
+        simplified_num = REAL_RADIUS_EDITABLE // gcd_value
+        simplified_denom = REAL_HEIGHT_EDITABLE // gcd_value
         
         simplified_exp = MathTex(r"r = \frac{" + str(simplified_num) + r"h}{" + str(simplified_denom) + r"}", font_size=32).next_to(simplify_text, DOWN, buff=0.25)
 
@@ -248,10 +248,10 @@ class ConeRelatedRates(Scene):
         self.wait(1) """
 
         # Text indicating the value of h at halfway down the cone
-        halfway_text = Text("Halfway down the cone, h = " + str(real_height/2), font_size=24).next_to(simplify_constants, DOWN, buff=0.25)
+        halfway_text = Text("Halfway down the cone, h = " + str(REAL_HEIGHT_EDITABLE/2), font_size=24).next_to(simplify_constants, DOWN, buff=0.25)
 
         # Equation with values plugged in (-15 for dV/dt and 10 for h)
-        plugged_in_values = MathTex(r"-" + str(volume_loss) + r" = \frac{" + str(squared_num) + r"}{" + str(squared_denom) + r"} \pi (" + str(real_height/2) +r")^2 \frac{dh}{dt}", font_size=32).next_to(halfway_text, DOWN, buff=0.25)
+        plugged_in_values = MathTex(r"-" + str(VOLUME_LOSS_EDITABLE) + r" = \frac{" + str(squared_num) + r"}{" + str(squared_denom) + r"} \pi (" + str(REAL_HEIGHT_EDITABLE/2) +r")^2 \frac{dh}{dt}", font_size=32).next_to(halfway_text, DOWN, buff=0.25)
 
         # Animate writing the text and the equation
         self.play(Write(halfway_text))
@@ -260,14 +260,14 @@ class ConeRelatedRates(Scene):
 
         # Solve for dh/dt
         # Step 1: Transform 10^2 into 100
-        half_height_squared = (real_height / 2)**2
-        step_1 =  MathTex(r"-" + str(volume_loss) + r" = \frac{" + str(squared_num) + r"}{" + str(squared_denom) + r"} \pi (" + str(half_height_squared) +r") \frac{dh}{dt}", font_size=32).move_to(plugged_in_values)
+        half_height_squared = (REAL_HEIGHT_EDITABLE / 2)**2
+        step_1 =  MathTex(r"-" + str(VOLUME_LOSS_EDITABLE) + r" = \frac{" + str(squared_num) + r"}{" + str(squared_denom) + r"} \pi (" + str(half_height_squared) +r") \frac{dh}{dt}", font_size=32).move_to(plugged_in_values)
         self.play(Transform(plugged_in_values, step_1))
         self.wait(2)
 
         # Step 2: Multiply the constants (4 * 100) to get 400pi/25
         half_height_times_num = half_height_squared * squared_num
-        step_2 = MathTex(r"-" + str(volume_loss) + r" = \frac{" + str(half_height_times_num) + r"\pi}{" + str(squared_denom) + r"} \frac{dh}{dt}", font_size=32).move_to(step_1)
+        step_2 = MathTex(r"-" + str(VOLUME_LOSS_EDITABLE) + r" = \frac{" + str(half_height_times_num) + r"\pi}{" + str(squared_denom) + r"} \frac{dh}{dt}", font_size=32).move_to(step_1)
         self.play(Transform(plugged_in_values, step_2))
         self.wait(2)
 
@@ -277,7 +277,7 @@ class ConeRelatedRates(Scene):
         self.wait(2) """
 
         # Step 4: Divide 16pi over to solve for dh/dt
-        volume_loss_times_denom = volume_loss * squared_denom
+        volume_loss_times_denom = VOLUME_LOSS_EDITABLE * squared_denom
         step_4 = MathTex(r"\frac{-" + str(volume_loss_times_denom) +r"}{" + str(half_height_times_num) + r"\pi} = \frac{dh}{dt}", font_size=32).move_to(step_2)
         self.play(Transform(plugged_in_values, step_4))
         self.wait(2)
