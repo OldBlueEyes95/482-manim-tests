@@ -103,7 +103,7 @@ class DerivativeDefinition(Scene):
         # Path animation
         path_points = [axes.c2p(x, FUNC_EDITABLE(x)) for x in np.linspace(START_X_EDITABLE, STATIONARY_X_EDITABLE, 100)]
         path = VMobject().set_points_as_corners(path_points)
-        self.play(MoveAlongPath(moving_point, path, rate_func=linear, run_time=5))
+        self.play(MoveAlongPath(moving_point, path, rate_func=rate_functions.ease_out_sine, run_time=5))
         self.play(moving_point.animate.move_to(axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE))), run_time=0.5)
 
         self.play(FadeOut(h_label), FadeOut(h_line))
