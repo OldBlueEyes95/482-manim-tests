@@ -55,8 +55,7 @@ class ConeRelatedRates(Scene):
         self.play(FadeOut(height_line), FadeOut(height_label), FadeOut(radius_line), FadeOut(radius_label))
 
         # Add halfway marker
-        halfway_point = cone.get_top() + DOWN * (cone_height / 2)
-        halfway_line = DashedLine(halfway_point + LEFT * (cone_radius / 2), halfway_point + RIGHT * (cone_radius / 2), color=YELLOW)
+        halfway_line = DashedLine(cone.get_bottom() + RIGHT * cone_radius, cone.get_top() + DOWN * (cone_height / 2) + RIGHT * cone_radius, color=YELLOW)
         #Use half of real_height for halfway_text
         halfway_text = MathTex(f"h ={real_height / 2}\\text{{ cm}}", font_size=24).next_to(halfway_line, RIGHT)
         self.play(Create(halfway_line), Write(halfway_text))
@@ -93,11 +92,14 @@ class ConeRelatedRates(Scene):
         self.wait(1)
 
         # Step 8: Fade out the second set of lines
-        self.play(FadeOut(halfway_text))
+        self.play(FadeOut(halfway_text), FadeOut(halfway_line))
         self.play(FadeOut(new_height_line), FadeOut(new_height_label), FadeOut(new_radius_line), FadeOut(new_radius_label))
 
         # Step 9: Move both cones to the left
-        self.play(cone.animate.shift(LEFT * 5), water.animate.shift(LEFT * 5), halfway_line.animate.shift(LEFT * 5))
+        self.play(cone.animate.shift(LEFT * 5), water.animate.shift(LEFT * 5))
+
+        half_cone = Cone(height=cone_height / 2, base_radius=cone_radius / 2, direction=DOWN, checkerboard_colors=False).set_fill(BLUE, opacity=0.8).shift(DOWN * 2 + LEFT * 5)
+        self.play(FadeIn(half_cone))
 
         self.wait(1)
 

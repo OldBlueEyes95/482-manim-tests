@@ -18,10 +18,7 @@ FUNC_EDITABLE = lambda x: 0.5 * x**2 - x
 
 
 class DerivativeDefinition(Scene):
-
-    
     def construct(self):
-
         title = Text("Derivative Definition", font_size=60).set_color_by_gradient(RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE)
         self.play(Write(title))
         self.wait(2)
