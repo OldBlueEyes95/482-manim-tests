@@ -290,24 +290,24 @@ class CylindricalShells(ThreeDScene):
         
         self.play(Write(f_const))
         self.play(
-            Rotate(f_const, 2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
-            Write(s_const, rate_func=rate_functions.ease_in_quad)
+            Rotate(f_const, -2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
+            Write(s_const, rate_func=rate_functions.linear)
         )
         self.wait(1)
         self.play(FadeOut(f_const, s_const))
         
         self.play(Write(f__line))
         self.play(
-            Rotate(f__line, 2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
-            Write(f__line, rate_func=rate_functions.ease_in_quad)
+            Rotate(f__line, -2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
+            Write(s__line, rate_func=rate_functions.linear)
         )
         self.wait(1)
         self.play(FadeOut(f__line, s__line))
         
         self.play(Write(f_cubic))
         self.play(
-            Rotate(f_cubic, 2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
-            Write(s_cubic, rate_func=rate_functions.ease_in_quad)
+            Rotate(f_cubic, -2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
+            Write(s_cubic, rate_func=rate_functions.linear)
         )
         self.wait(1)
         self.play(FadeOut(f_cubic, s_cubic))
