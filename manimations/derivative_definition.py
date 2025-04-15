@@ -1,5 +1,7 @@
 from manim import *
+from sympy import symbols, latex, lambdify
 import numpy as np
+
 
 config.pixel_height = 720
 config.pixel_width = 1280
@@ -7,15 +9,17 @@ config.frame_height = 10.0
 config.frame_width = 18.0
 
 # GLOBAL VARIABLES
+x = symbols('x')
+FUNC_EDITABLE = 0.5 * x**2 - x
+
 X_RANGE_EDITABLE = [-5, 5, 1]
 Y_RANGE_EDITABLE = [-5, 5, 1]
-START_X_EDITABLE = 2
+START_X_EDITABLE = 3
 STATIONARY_X_EDITABLE = -1
 
 # Easily editable function
-FUNC_EDITABLE = lambda x: 0.5 * x**2 - x
-
-
+lambda_func = lambdify(x, FUNC_EDITABLE, modules=['numpy'])
+func_latex = f"f(x) = {latex(FUNC_EDITABLE)}"
 
 class DerivativeDefinition(Scene):
     def construct(self):
@@ -30,23 +34,23 @@ class DerivativeDefinition(Scene):
             font_size=36
         ).to_corner(UL)
 
-        rhs_derivative_def = MathTex(
+        """rhs_derivative_def = MathTex(
             "= \\text{slope of the secant line}",
             font_size=36
-        ).next_to(lhs_derivative_def, RIGHT)
+        ).next_to(lhs_derivative_def, RIGHT)"""
 
-        explanation = Text(
+        """explanation = Text(
             "As h → 0, the slope of the secant line approaches\nthe slope of the tangent line.",
             font_size=28
-        ).next_to(lhs_derivative_def, DOWN, aligned_edge=LEFT)
+        ).next_to(lhs_derivative_def, DOWN, aligned_edge=LEFT)"""
 
         # Write both sides of the equation
-        self.play(Write(lhs_derivative_def), Write(rhs_derivative_def))
+        self.play(Write(lhs_derivative_def))
+        
+
+        func_label = MathTex(func_latex, font_size=36).to_corner(DL)
+        self.play(Write(func_label))
         self.wait(1)
-        self.play(Write(explanation))
-        self.wait(2)
-        # Fade out only the right-hand side and explanation
-        self.play(FadeOut(rhs_derivative_def), FadeOut(explanation))
 
 
         # Axes
@@ -60,16 +64,81 @@ class DerivativeDefinition(Scene):
         self.play(Create(axes), Write(labels))
 
         # Function curve
-        func_curve = axes.plot(FUNC_EDITABLE, color=BLUE)
+        func_curve = axes.plot(lambda_func, color=BLUE)
         self.play(Create(func_curve))
 
         # Stationary and moving points
-        stationary_point = Dot(axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE)), color=RED)
-        moving_point = Dot(axes.c2p(START_X_EDITABLE, FUNC_EDITABLE(START_X_EDITABLE)), color=YELLOW)
+        stationary_point = Dot(axes.c2p(STATIONARY_X_EDITABLE, lambda_func(STATIONARY_X_EDITABLE)), color=RED)
+        moving_point = Dot(axes.c2p(START_X_EDITABLE, lambda_func(START_X_EDITABLE)), color=YELLOW)
         self.play(Create(stationary_point), Create(moving_point))
 
+        # Labels next to each point
+        stationary_label = Text(
+            "(x, f(x))",
+            font_size=28,
+            color=WHITE
+        ).next_to(stationary_point, UP, buff=0.3)
 
+        moving_label = Text(
+            "(x+h, f(x+h))",
+            font_size=28,
+            color=WHITE
+        ).next_to(moving_point, UP, buff=0.3)
+
+        self.play(Write(stationary_label), Write(moving_label))
+
+
+        # dotted lines
+        x_line = DashedLine(start=stationary_point.get_center(), end=axes.c2p(STATIONARY_X_EDITABLE, 0), color=YELLOW)
+        x_plus_h_line = DashedLine(start=moving_point.get_center(), end=axes.c2p(START_X_EDITABLE, 0), color=YELLOW)
+
+        start_x_label = MathTex("x", font_size=32).next_to(axes.c2p(STATIONARY_X_EDITABLE, 0), DOWN, buff=0.2)
+        start_x_plus_h_label = MathTex("x+h", font_size=32).next_to(axes.c2p(START_X_EDITABLE, 0), DOWN, buff=0.2)
+
+                # Create a brace between x and x+h on the x-axis
+        brace = Brace(
+            Line(
+                axes.c2p(STATIONARY_X_EDITABLE, 0),
+                axes.c2p(START_X_EDITABLE, 0),
+            ),
+            direction=-UP
+        )
         
+        brace.shift(DOWN * 0.5)
+        h_label = brace.get_text("h")
+
+        # Slope formula
+        slope_eq = MathTex(
+            "\\text{slope} = \\frac{f(x+h) - f(x)}{(x+h) - x}",
+            font_size=36
+        ).to_corner(UL).shift(DOWN * 1.5)
+
+        # Simplified slope
+        slope_simplified = MathTex(
+            "\\text{slope} = \\frac{f(x+h) - f(x)}{h}",
+            font_size=36
+        ).move_to(slope_eq.get_center())
+
+
+        slope_label = always_redraw(lambda: MathTex(
+            "Slope =", f"{self.calculate_slope(STATIONARY_X_EDITABLE, self.get_x_coordinate(moving_point, axes)):.2f}"
+        ).to_corner(DR))
+        x_label = MathTex("x =" f"{STATIONARY_X_EDITABLE}").next_to(slope_label, UP, buff=0.5)
+        self.play (Write(x_label))
+
+        # Animate slope explanation
+        self.play(Write(slope_eq))
+        self.wait(1)
+        self.play(Transform(slope_eq, slope_simplified))  # Skip copying the denominator part
+        self.wait(2)
+
+
+        self.play(Create(x_line), Create(x_plus_h_line), Write(start_x_label), Write(start_x_plus_h_label))
+        self.play(Create(brace), Write(h_label))
+        self.wait(2)
+        self.play(FadeOut(x_line), FadeOut(x_plus_h_line), FadeOut(start_x_label), FadeOut(start_x_plus_h_label), FadeOut(brace), FadeOut(h_label), FadeOut(stationary_label), FadeOut(moving_label), FadeOut(slope_eq))
+
+
         tangent_line = always_redraw(lambda: self.get_tangent_line(axes, STATIONARY_X_EDITABLE))
         tangent_label = Text("Tangent line:", font_size=32).set_color(YELLOW).next_to(tangent_line, LEFT)
         tangent_label.shift(RIGHT * 1.5 + DOWN * 0.5)
@@ -84,8 +153,8 @@ class DerivativeDefinition(Scene):
 
         # h line and label
         h_line = always_redraw(lambda: Line(
-            axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE)),
-            axes.c2p(self.get_x_coordinate(moving_point, axes), FUNC_EDITABLE(STATIONARY_X_EDITABLE)),
+            axes.c2p(STATIONARY_X_EDITABLE, lambda_func(STATIONARY_X_EDITABLE)),
+            axes.c2p(self.get_x_coordinate(moving_point, axes), lambda_func(STATIONARY_X_EDITABLE)),
             color=YELLOW
         ))
         h_label = always_redraw(lambda: MathTex(
@@ -94,17 +163,14 @@ class DerivativeDefinition(Scene):
         self.play(Create(h_line), Write(h_label))
 
         # Slope tracker
-        slope_label = always_redraw(lambda: MathTex(
-            "Slope =", f"{self.calculate_slope(STATIONARY_X_EDITABLE, self.get_x_coordinate(moving_point, axes)):.2f}"
-        ).to_corner(DR))
-        x_label = MathTex("x =" f"{STATIONARY_X_EDITABLE}").next_to(slope_label, UP, buff=0.5)
-        self.play(Write(slope_label), Write(x_label))
-
+       
+        self.play(Write(slope_label))
+    
         # Path animation
-        path_points = [axes.c2p(x, FUNC_EDITABLE(x)) for x in np.linspace(START_X_EDITABLE, STATIONARY_X_EDITABLE, 100)]
+        path_points = [axes.c2p(x, lambda_func(x)) for x in np.linspace(START_X_EDITABLE, STATIONARY_X_EDITABLE, 100)]
         path = VMobject().set_points_as_corners(path_points)
         self.play(MoveAlongPath(moving_point, path, rate_func=rate_functions.ease_out_sine, run_time=5))
-        self.play(moving_point.animate.move_to(axes.c2p(STATIONARY_X_EDITABLE, FUNC_EDITABLE(STATIONARY_X_EDITABLE))), run_time=0.5)
+        self.play(moving_point.animate.move_to(axes.c2p(STATIONARY_X_EDITABLE, lambda_func(STATIONARY_X_EDITABLE))), run_time=0.5)
 
         self.play(FadeOut(h_label), FadeOut(h_line))
         self.wait()
@@ -113,18 +179,18 @@ class DerivativeDefinition(Scene):
         return axes.p2c(dot.get_center())[0]
 
     def calculate_derivative(self, x, dx=1e-4):
-        return (FUNC_EDITABLE(x + dx) - FUNC_EDITABLE(x - dx)) / (2 * dx)
+        return (lambda_func(x + dx) - lambda_func(x - dx)) / (2 * dx)
 
     def calculate_slope(self, x1, x2):
         if x1 == x2:
             return self.calculate_derivative(x1)
-        y1 = FUNC_EDITABLE(x1)
-        y2 = FUNC_EDITABLE(x2)
+        y1 = lambda_func(x1)
+        y2 = lambda_func(x2)
         return (y2 - y1) / (x2 - x1)
     
     def get_tangent_line(self, axes, x, dx=1e-4):
         slope = self.calculate_derivative(x, dx)
-        y = FUNC_EDITABLE(x)
+        y = lambda_func(x)
 
         delta_x = 1.5
         x1 = x - delta_x
@@ -142,10 +208,10 @@ class DerivativeDefinition(Scene):
     def get_extended_secant_line(self, axes, x1, x2):
         if abs(x1 - x2) < 1e-6:
             slope = self.calculate_derivative(x1)
-            y1 = FUNC_EDITABLE(x1)
+            y1 = lambda_func(x1)
         else:
-            y1 = FUNC_EDITABLE(x1)
-            y2 = FUNC_EDITABLE(x2)
+            y1 = lambda_func(x1)
+            y2 = lambda_func(x2)
             slope = (y2 - y1) / (x2 - x1)
 
         x_min, x_max = X_RANGE_EDITABLE[0], X_RANGE_EDITABLE[1]
