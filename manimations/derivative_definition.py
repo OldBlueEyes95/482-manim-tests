@@ -15,7 +15,7 @@ FUNC_EDITABLE = 0.5 * x**2 - x
 X_RANGE_EDITABLE = [-5, 5, 1]
 Y_RANGE_EDITABLE = [-5, 5, 1]
 START_X_EDITABLE = 3
-STATIONARY_X_EDITABLE = -1
+STATIONARY_X_EDITABLE = -2
 
 # Easily editable function
 lambda_func = lambdify(x, FUNC_EDITABLE, modules=['numpy'])
@@ -119,6 +119,18 @@ class DerivativeDefinition(Scene):
             font_size=36
         ).move_to(slope_eq.get_center())
 
+        stationary_y = lambda_func(STATIONARY_X_EDITABLE)
+        moving_y = lambda_func(START_X_EDITABLE)
+
+        vertical_base_point = axes.c2p(START_X_EDITABLE, stationary_y)
+
+        vertical_leg = Line(moving_point.get_center(), vertical_base_point, color=BLUE)
+        horizontal_leg = Line(vertical_base_point, stationary_point.get_center(), color=GREEN)
+
+        vertical_leg_label = MathTex("f(x+h)-f(x)", font_size=28).next_to(vertical_leg, RIGHT, buff=0.2)
+        horizontal_leg_label = MathTex("h", font_size=28).next_to(horizontal_leg, UP, buff=0.2)
+
+
 
         slope_label = always_redraw(lambda: MathTex(
             "Slope =", f"{self.calculate_slope(STATIONARY_X_EDITABLE, self.get_x_coordinate(moving_point, axes)):.2f}"
@@ -136,8 +148,13 @@ class DerivativeDefinition(Scene):
         self.play(Create(x_line), Create(x_plus_h_line), Write(start_x_label), Write(start_x_plus_h_label))
         self.play(Create(brace), Write(h_label))
         self.wait(2)
-        self.play(FadeOut(x_line), FadeOut(x_plus_h_line), FadeOut(start_x_label), FadeOut(start_x_plus_h_label), FadeOut(brace), FadeOut(h_label), FadeOut(stationary_label), FadeOut(moving_label), FadeOut(slope_eq))
+        self.play(FadeOut(x_line), FadeOut(x_plus_h_line), FadeOut(start_x_label), FadeOut(start_x_plus_h_label), FadeOut(brace), FadeOut(h_label), FadeOut(stationary_label), FadeOut(moving_label))
 
+        self.wait(1)
+        self.play(Create(vertical_leg), Create(horizontal_leg))
+        self.play(Write(vertical_leg_label), Write(horizontal_leg_label))
+        self.wait(2)
+        self.play( FadeOut(vertical_leg), FadeOut(horizontal_leg), FadeOut(vertical_leg_label), FadeOut(horizontal_leg_label),FadeOut(slope_eq))
 
         tangent_line = always_redraw(lambda: self.get_tangent_line(axes, STATIONARY_X_EDITABLE))
         tangent_label = Text("Tangent line:", font_size=32).set_color(YELLOW).next_to(tangent_line, LEFT)
@@ -157,9 +174,13 @@ class DerivativeDefinition(Scene):
             axes.c2p(self.get_x_coordinate(moving_point, axes), lambda_func(STATIONARY_X_EDITABLE)),
             color=YELLOW
         ))
-        h_label = always_redraw(lambda: MathTex(
-            "h =", f"{abs(self.get_x_coordinate(moving_point, axes) - STATIONARY_X_EDITABLE):.2f}"
-        ).next_to(h_line, DOWN, buff=0.5))
+        h_label = MathTex("h =", f"{abs(self.get_x_coordinate(moving_point, axes) - STATIONARY_X_EDITABLE):.2f}")
+        h_label.add_updater(lambda m: m.become(
+            MathTex("h =", f"{abs(self.get_x_coordinate(moving_point, axes) - STATIONARY_X_EDITABLE):.2f}")
+            .next_to(h_line, DOWN, buff=0.5)
+            .set_opacity(self.compute_h_opacity(self.get_x_coordinate(moving_point, axes)))
+        ))
+
         self.play(Create(h_line), Write(h_label))
 
         # Slope tracker
@@ -174,6 +195,16 @@ class DerivativeDefinition(Scene):
 
         self.play(FadeOut(h_label), FadeOut(h_line))
         self.wait()
+
+
+    def compute_h_opacity(self, x_val):
+        h = abs(x_val - STATIONARY_X_EDITABLE)
+        if h > 0.2:
+            return 1  # fully visible
+        elif h > 0.05:
+            return (h - 0.05) / (0.15)  # fade out linearly from 1 to 0
+        else:
+            return 0  # fully invisible
 
     def get_x_coordinate(self, dot, axes):
         return axes.p2c(dot.get_center())[0]
