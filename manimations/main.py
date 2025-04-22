@@ -232,6 +232,9 @@ class CylindricalShells(ThreeDScene):
         
         self.add(standing_axes, axes_labels)
         
+        #TODO flip y and z axis labels
+        #TODO add a flat side image of the function in 2D space
+        
         # Define 3D parametric curves (x, y, z) where z is the function value
         x_offset = 0
         y_offset = 0 # keep at 0 to align to axis
@@ -254,6 +257,8 @@ class CylindricalShells(ThreeDScene):
             checkerboard_colors=[RED, RED_D],
             fill_opacity=0.7
         )
+        e_const = ""
+        
         f__line = ParametricFunction(
             lambda t: np.array([t + x_offset, y_offset, 0.5 * t + z_offset]),  # z = 0.5x
             t_range=t_range, color=BLUE
@@ -270,6 +275,7 @@ class CylindricalShells(ThreeDScene):
             checkerboard_colors=[BLUE, BLUE_D],
             fill_opacity=0.7
         )
+        
         f_cubic = ParametricFunction(
             lambda t: np.array([t + x_offset, y_offset, 0.02 * t**3 + z_offset]),  # z = 0.1x^3
             t_range=t_range, color=GREEN
@@ -287,6 +293,40 @@ class CylindricalShells(ThreeDScene):
             fill_opacity=0.7
         )
         
+        cylinder_formula_tex = MathTex(r"V_{\text{Cylinder}} = \pi r^2 h")
+        cylinder_formula_tex = MathTex(
+            # r"V_{\text{Cylinder}} = \pi r^2 \color{green}h"
+            # r"V_{ \text{Cylinder} } = { \color{red} \pi } { \color{blue} r^2 } \cdot { \color{green} h }",
+            r"V_{ \text{Cylinder} }",
+            r"=",
+            r"\pi",
+            r"r^2",
+            r"h"
+        ).to_corner(UR, buff=0.5)
+        cylinder_formula_tex[0].set_color(BLUE)
+        cylinder_formula_tex[1].set_color(WHITE)
+        cylinder_formula_tex[2].set_color(RED)
+        cylinder_formula_tex[3].set_color(YELLOW)
+        cylinder_formula_tex[4].set_color(GREEN)
+        
+        shell_formula_tex = MathTex(
+            # r"V_{\text{Cylinder}} = \pi r^2 \color{green}h"
+            # r"V_{ \text{Cylinder} } = { \color{red} \pi } { \color{blue} r^2 } \cdot { \color{green} h }",
+            r"V",
+            r"=",
+            r"\pi",
+            r"\int_a^b",
+            r"[f(x)]^2",
+            r"dx"
+        ).to_corner(UR, buff=0.5).shift(DOWN)
+        shell_formula_tex[0].set_color(BLUE)
+        shell_formula_tex[1].set_color(WHITE)
+        shell_formula_tex[2].set_color(RED)
+        shell_formula_tex[3].set_color(GREEN)
+        shell_formula_tex[4].set_color(YELLOW)
+        shell_formula_tex[5].set_color(GREEN)
+        
+        
         
         self.play(Write(f_const))
         self.play(
@@ -294,8 +334,13 @@ class CylindricalShells(ThreeDScene):
             Write(s_const, rate_func=rate_functions.linear)
         )
         self.wait(1)
+        # self.play(FadeIn(cylinder_formula_tex))
+        self.add_fixed_in_frame_mobjects(cylinder_formula_tex)
+        self.add_fixed_in_frame_mobjects(shell_formula_tex)
+        self.wait(1)
         self.play(FadeOut(f_const, s_const))
         
+        '''
         self.play(Write(f__line))
         self.play(
             Rotate(f__line, -2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
@@ -311,5 +356,6 @@ class CylindricalShells(ThreeDScene):
         )
         self.wait(1)
         self.play(FadeOut(f_cubic, s_cubic))
+        '''
         
         self.wait(1)
