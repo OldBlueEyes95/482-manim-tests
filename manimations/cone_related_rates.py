@@ -54,6 +54,17 @@ class ConeRelatedRates(Scene):
         # Fade out initial lines and labels as the water starts to fall
         self.play(FadeOut(height_line), FadeOut(height_label), FadeOut(radius_line), FadeOut(radius_label))
 
+        # Explain how halfway height is calculated
+        height_explanation_text = Text(
+            f"Total height = {REAL_HEIGHT_EDITABLE} cm\nHalfway height = {REAL_HEIGHT_EDITABLE} / 2 = {REAL_HEIGHT_EDITABLE / 2} cm",
+            font_size=24
+        ).to_edge(LEFT).shift(UP * 2)
+
+        self.play(Write(height_explanation_text))
+        self.wait(2)
+        self.play(FadeOut(height_explanation_text))
+
+
         # Add halfway marker
         halfway_line = DashedLine(cone.get_bottom() + RIGHT * cone_radius, cone.get_top() + DOWN * (cone_height / 2) + RIGHT * cone_radius, color=YELLOW)
         #Use half of REAL_HEIGHT_EDITABLE for halfway_text
