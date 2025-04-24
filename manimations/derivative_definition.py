@@ -160,7 +160,7 @@ class DerivativeDefinition(Scene):
 
         tangent_line = always_redraw(lambda: self.get_tangent_line(axes, STATIONARY_X_EDITABLE))
         tangent_label = Text("Tangent line:", font_size=32).set_color(YELLOW).next_to(tangent_line, LEFT)
-        tangent_label.shift(RIGHT * 1.5 + DOWN * 0.5)
+        tangent_label.shift(RIGHT * 3 + DOWN * 0.5)
         self.play(Create(tangent_line), Write(tangent_label))
 
 

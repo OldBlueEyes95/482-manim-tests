@@ -42,10 +42,10 @@ class ConeRelatedRates(Scene):
         self.wait(1)
 
         # Step 5: Add initial lines for radius and height with labels
-        height_line = Line(cone.get_top(), cone.get_bottom(), color=GREEN)
+        height_line = Line(cone.get_top(), cone.get_bottom(), color=YELLOW_E)
         #Use REAL_HEIGHT_EDITABLE and REAL_RADIUS_EDITABLE for the labels
         height_label = MathTex(f"{REAL_HEIGHT_EDITABLE}\\text{{ cm}}").next_to(height_line, RIGHT, buff=0.1)
-        radius_line = Line(cone.get_top(), cone.get_top() + RIGHT * cone_radius, color=RED)
+        radius_line = Line(cone.get_top(), cone.get_top() + RIGHT * cone_radius, color=YELLOW_E)
         radius_label = MathTex(f"{REAL_RADIUS_EDITABLE}\\text{{ cm}}").next_to(radius_line, UP, buff=0.1)
 
         self.play(Create(height_line), Write(height_label), Create(radius_line), Write(radius_label))
@@ -92,10 +92,10 @@ class ConeRelatedRates(Scene):
 
         # Step 7: Add new lines for the halfway radius and height with labels
         #Again, use REAL_HEIGHT_EDITABLE and REAL_RADIUS_EDITABLE for the labels
-        new_height_line = Line(cone.get_top() + DOWN * (cone_height / 2), cone.get_bottom(), color=GREEN)
+        new_height_line = Line(cone.get_top() + DOWN * (cone_height / 2), cone.get_bottom(), color=YELLOW_E)
         new_height_label = MathTex(f"{REAL_HEIGHT_EDITABLE / 2}\\text{{ cm}}").next_to(new_height_line, RIGHT, buff=0.1)
 
-        new_radius_line = Line(cone.get_top() + DOWN * (cone_height / 2), cone.get_top() + DOWN * (cone_height / 2) + RIGHT * (cone_radius / 2), color=RED)
+        new_radius_line = Line(cone.get_top() + DOWN * (cone_height / 2), cone.get_top() + DOWN * (cone_height / 2) + RIGHT * (cone_radius / 2), color=YELLOW_E)
         new_radius_label = MathTex(f"{REAL_RADIUS_EDITABLE / 2}\\text{{ cm}}").next_to(new_radius_line, UP, buff=0.1)
 
         self.play(Create(new_height_line), Write(new_height_label), Create(new_radius_line), Write(new_radius_label))
