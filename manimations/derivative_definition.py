@@ -85,7 +85,9 @@ class DerivativeDefinition(Scene):
             color=WHITE
         ).next_to(moving_point, UP, buff=0.3)
 
-        self.play(Write(stationary_label), Write(moving_label))
+        self.play(Write(stationary_label))
+        self.wait(1)
+        self.play(Write(moving_label))
 
 
         # dotted lines
@@ -223,7 +225,7 @@ class DerivativeDefinition(Scene):
         slope = self.calculate_derivative(x, dx)
         y = lambda_func(x)
 
-        delta_x = 1.5
+        delta_x = 5
         x1 = x - delta_x
         x2 = x + delta_x
         y1 = y + slope * (x1 - x)
