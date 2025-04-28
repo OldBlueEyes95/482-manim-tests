@@ -339,9 +339,9 @@ class CylindricalShells(MyThreeDScene):
         self.play(Write(cylinder_formula_tex))
         self.play(TransformMatchingTex(cylinder_formula_tex, shell_formula_tex, run_time=3))
         self.wait(1)
-        self.play(FadeOut(f_const, s_const, shell_formula_tex))
+        self.play(FadeOut(f_const, s_const))
         
-        '''
+        
         self.play(Write(f__line))
         self.play(
             Rotate(f__line, -2*PI, about_point=standing_axes.get_origin(), axis=X_AXIS),
@@ -357,6 +357,6 @@ class CylindricalShells(MyThreeDScene):
         )
         self.wait(1)
         self.play(FadeOut(f_cubic, s_cubic))
-        '''
+        
         
         self.wait(1)
