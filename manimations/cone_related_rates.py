@@ -22,8 +22,22 @@ class ConeRelatedRates(Scene):
         SCALE_FACTOR_EDITABLE = 0.25
         PLAYBACK_SPEED_EDITABLE = 8
         #change to use REAL_HEIGHT_EDITABLE and REAL_RADIUS_EDITABLE in the problem statement
-        problem_statement = Text(f"An inverted cone has a height of {REAL_HEIGHT_EDITABLE} cm and a radius of {REAL_RADIUS_EDITABLE} cm, and was initially full of water.\nThe water drains out at a rate of {VOLUME_LOSS_EDITABLE} cm^3/sec.\nThe surface level of the water falls as a result. At what rate is the water level falling when the water is halfway down the cone?", font_size=20).to_edge(UP)
-        self.play(Write(problem_statement))
+        problem_strs = [
+                    r"An inverted cone has a height of ",
+                    f"{REAL_HEIGHT_EDITABLE}",
+                    r"cm and a radius of ",
+                    f"{REAL_RADIUS_EDITABLE}",
+                    r"cm, and was initially full of water.",
+                    "\n",
+                    r"The water drains out at a rate of ",
+                    f"{VOLUME_LOSS_EDITABLE} ",
+                    r"cm$^3$/sec.",
+                    "\n",
+                    "The surface level of the water falls as a result. ",
+                    "At what rate is the water level falling when the water is halfway down the cone?"
+                ]
+        problem_statement = Tex(*problem_strs, font_size=24).to_edge(UP)
+        self.add(problem_statement)
         self.wait(2)
 
         # Step 3: Create the cone
