@@ -764,3 +764,45 @@ class ConeRelatedRates(Scene):
         self.play(Write(final_solution))
         self.play(Create(rect))
         self.wait(1)
+
+
+class FadeTransformSubmobjects(Scene):
+    def construct(self):
+        SHAPE1_COLOR_EDITABLE = RED
+        SHAPE2_COLOR_EDITABLE = BLUE
+        SHAPE3_COLOR_EDITABLE = GREEN
+        SHAPE4_COLOR_EDITABLE = YELLOW
+        SHAPE1_OPACITY_EDITABLE = 1
+        SHAPE2_OPACITY_EDITABLE = 0.5
+        SHAPE3_OPACITY_EDITABLE = 0.25
+        SHAPE4_OPACITY_EDITABLE = 0
+        
+        
+        src = VGroup(
+            Square(
+                color=SHAPE1_COLOR_EDITABLE, 
+                fill_opacity=SHAPE1_OPACITY_EDITABLE
+            ), 
+            Circle(
+                color=SHAPE2_COLOR_EDITABLE, 
+                fill_opacity=SHAPE2_OPACITY_EDITABLE
+            ).shift(LEFT + UP)
+        ).shift(LEFT)
+        
+        target = VGroup(
+            Circle(
+                color=SHAPE3_COLOR_EDITABLE, 
+                fill_opacity=SHAPE3_OPACITY_EDITABLE
+            ), 
+            Triangle(
+                color=SHAPE4_COLOR_EDITABLE, 
+                fill_opacity=SHAPE4_OPACITY_EDITABLE
+            ).shift(RIGHT + DOWN)
+        ).shift(RIGHT)
+        
+        
+        self.play(FadeIn(src))
+        self.play(
+            FadeTransform(src, target),
+        )
+        self.play(*[FadeOut(mobj) for mobj in self.mobjects])
