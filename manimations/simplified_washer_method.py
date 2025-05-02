@@ -118,3 +118,7 @@ class WasherMethod(MyThreeDScene):
         )
         self.wait(1)
         self.play(FadeOut(f_cubic, s_cubic))
+
+if __name__ == "__main__":
+    scene = WasherMethod()
+    scene.render()

@@ -215,3 +215,9 @@ class GenericMatrixMultiply(Scene):
         self.play(FadeOut(row_bar))
         self.play(FadeOut(col_bar))
         self.play(FadeOut(out_box))
+
+
+
+if __name__ == "__main__":
+    scene = GenericMatrixMultiply()
+    scene.render()

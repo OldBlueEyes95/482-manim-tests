@@ -196,3 +196,8 @@ class WasherMethod(MyThreeDScene):
         
         
         self.wait(1)
+
+
+if __name__ == "__main__":
+    scene = WasherMethod()
+    scene.render()
