@@ -81,17 +81,17 @@ class WasherMethod(MyThreeDScene):
             checkerboard_colors=[GREEN, GREEN_D],
             fill_opacity=fill_opacity
         )
-        e_cubic_rstrs =  [r"V",  r"=", r"\pi", r"\int_a^b",    r"[x^3]^2", r"dx"]
-        e_cubic_colors = [BLUE, WHITE,    RED,       GREEN,      YELLOW, GREEN]
-        e_cubic = MathTex(*e_cubic_rstrs, font_size=formula_font_size).to_corner(UR, buff=0.5)
-        make_fixed(e_cubic)
-        apply_colors(e_cubic, e_cubic_colors)
+        # e_cubic_rstrs =  [r"V",  r"=", r"\pi", r"\int_a^b",    r"[x^3]^2", r"dx"]
+        # e_cubic_colors = [BLUE, WHITE,    RED,       GREEN,      YELLOW, GREEN]
+        # e_cubic = MathTex(*e_cubic_rstrs, font_size=formula_font_size).to_corner(UR, buff=0.5)
+        # make_fixed(e_cubic)
+        # apply_colors(e_cubic, e_cubic_colors)
         
-        e_cubic_final_rstrs =  [r"V",  r"=", r"\pi", r"\frac{1}{7} x^7"]
-        e_cubic_final_colors = [BLUE, WHITE,    RED,            GREEN_C]
-        e_cubic_final = MathTex(*e_cubic_final_rstrs, font_size=formula_font_size).to_corner(UR, buff=0.5)
-        make_fixed(e_cubic_final)
-        apply_colors(e_cubic_final, e_cubic_final_colors)
+        # e_cubic_final_rstrs =  [r"V",  r"=", r"\pi", r"\frac{1}{7} x^7"]
+        # e_cubic_final_colors = [BLUE, WHITE,    RED,            GREEN_C]
+        # e_cubic_final = MathTex(*e_cubic_final_rstrs, font_size=formula_font_size).to_corner(UR, buff=0.5)
+        # make_fixed(e_cubic_final)
+        # apply_colors(e_cubic_final, e_cubic_final_colors)
         
         
         '''
