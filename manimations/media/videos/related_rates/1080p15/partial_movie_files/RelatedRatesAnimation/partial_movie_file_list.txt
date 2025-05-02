@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/1080p15/partial_movie_files/RelatedRatesAnimation/2072619505_3112729241_223132457.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/1080p15/partial_movie_files/RelatedRatesAnimation/2856717870_175059952_2528612441.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/1080p15/partial_movie_files/RelatedRatesAnimation/2856717870_1227741832_1145499856.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/1080p15/partial_movie_files/RelatedRatesAnimation/2856717870_3549789240_673931675.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/1080p15/partial_movie_files/RelatedRatesAnimation/2856717870_2408024828_1659499025.mp4'

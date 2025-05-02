@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3361510770_1755726489_223132457.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_3950076231_2446990079.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_3048009693_4235605995.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_2408024828_1420358313.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_3549789240_3698783279.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_2408024828_2376165753.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_2451284994_1307878608.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_942421757_1377324335.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_4007706789_1568536496.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_1175828675_3156344892.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_1918609431_1969874215.mp4'
+file 'file:/Users/alexmuller/Spring2025/CSCE482/related_rates/manimations/media/videos/related_rates/720p15/partial_movie_files/RelatedRatesAnimation/3429276491_2408024828_3043195581.mp4'
