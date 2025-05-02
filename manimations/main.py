@@ -442,7 +442,6 @@ class ConeDebugging(Scene):
         self.add(problem_statement)
 
 
-from manim import *
 from math import gcd
 
 # Set the resolution and frame size
