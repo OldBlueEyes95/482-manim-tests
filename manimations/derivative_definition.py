@@ -3,8 +3,8 @@ from sympy import symbols, latex, lambdify
 import numpy as np
 
 
-config.pixel_height = 720
-config.pixel_width = 1280
+config.pixel_height = 1080
+config.pixel_width = 1920
 config.frame_height = 10.0
 config.frame_width = 18.0
 
